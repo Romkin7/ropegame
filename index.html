@@ -1,145 +1,169 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Hirsipuu</title>
-    <!-- 
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="style.css" />
+        <title>Hirsipuu</title>
+        <!-- 
 
- 	--></head>
+ 	-->
+    </head>
 
-  <body>
-    <h1>Hirsipuu</h1>
-    <label for="kategoria">Valitse kategoria:</label>
+    <body>
+        <h1>Hirsipuu</h1>
+        <label for="kategoria">Valitse kategoria:</label>
 
-    <select name="kategoria" id="kategoria">
-      <option value="nisäkkäät">Nisäkkäät</option>
-      <option value="pasila">Pasila</option>
-      <option value="ammatit">Ammatit</option>
-      <option value="linnut">Linnut</option>
-    </select>
+        <select name="kategoria" id="kategoria">
+            <option value="nisäkkäät">Nisäkkäät</option>
+            <option value="pasila">Pasila</option>
+            <option value="ammatit">Ammatit</option>
+            <option value="linnut">Linnut</option>
+        </select>
 
-    <h2>Arvaa sana: <span id="arvaus"></span></h2>
+        <h2>Arvaa sana: <span id="arvaus"></span></h2>
 
-    <label>Anna kirjain:</label>
-    <input type="text" id="syote" size="3" />
-    <input type="button" value="Arvaa" />
+        <label>Anna kirjain:</label>
+        <input type="text" id="syote" size="3" />
+        <input type="button" value="Arvaa" />
 
-    <p id="viesti"></p>
+        <p id="viesti"></p>
 
-    <button id="aloita">Aloita uusi peli</button>
+        <button id="aloita">Aloita uusi peli</button>
 
-    <canvas id="hirsipuu" width="180" height="250"></canvas>
+        <canvas id="hirsipuu" width="180" height="250"></canvas>
 
-    <script src="hangman.js"></script>
-    <script src="sanat.js"></script>
-    <script>
-      var hirsipuu = document.getElementById("hirsipuu");
-      var arvattavaSanaValinta = document.getElementById("arvaus");
-      var arvaus = [];
-      var syote = document.querySelector("#syote").value;
-      var arvottavatSanat = [];
-      var arvattavaSana = "";
-      var kategoria = "";
-      document
-        .querySelector("#kategoria")
-        .addEventListener("change", function (event) {
-          arvoSana(event);
-        });
-      document
-        .querySelector('input[type="button"]')
-        .addEventListener("click", function (event) {
-          syote = document.querySelector("#syote").value;
-          validoiArvaus(syote);
-        });
-      document
-        .getElementById("aloita")
-        .addEventListener("click", function (event) {
-          aloitaPeli();
-        });
-      function arvoSana(event) {
-        /** Tallenna kategoria select inputista kategoria muuttujaan, 
+        <script src="hangman.js"></script>
+        <script src="sanat.js"></script>
+        <script>
+            var count = 0;
+            var hirsipuu = document.getElementById('hirsipuu');
+            var arvattavaSanaValinta = document.getElementById('arvaus');
+            var arvaus = [];
+            var syote = document.querySelector('#syote').value;
+            var arvottavatSanat = [];
+            var arvattavaSana = '';
+            var kategoria = '';
+            document.querySelector('#kategoria').addEventListener('change', function(event) {
+                arvoSana(event);
+                aloitaPeli();
+            });
+            document.querySelector('input[type="button"]').addEventListener('click', function(event) {
+                syote = document.querySelector('#syote').value;
+                validoiArvaus(syote);
+            });
+            document.getElementById('aloita').addEventListener('click', function(event) {
+                aloitaPeli();
+            });
+            function arvoSana(event) {
+                /** Tallenna kategoria select inputista kategoria muuttujaan, 
 		   joko valitsemalla listalta event target objektista, 
 		   tai panamalla aloita peli nappia hakemalla default kategoria arvo. */
-        kategoria =
-          event && event.target && event.target.value
-            ? event.target.value
-            : document.querySelector("select").value;
+                kategoria = event && event.target && event.target.value ? event.target.value : document.querySelector('select').value;
 
-        /** aseta arvottavat sanat sanat.js tiedoston kategoriat listalta valitun kategorian alta. */
-        arvottavatSanat = asetaArvottavatSanat(kategoria);
+                /** aseta arvottavat sanat sanat.js tiedoston kategoriat listalta valitun kategorian alta. */
+                arvottavatSanat = asetaArvottavatSanat(kategoria);
 
-        /** arvo arvottavienSanojen listalta yksi sana ranodomilla ja tallenna se arvattavaSana muuttujaan. */
-        arvattavaSana =
-          arvottavatSanat[0][randomLuku(0, arvottavatSanat[0].length)];
-        console.log(arvattavaSana);
+                /** arvo arvottavienSanojen listalta yksi sana ranodomilla ja tallenna se arvattavaSana muuttujaan. */
+                arvattavaSana = arvottavatSanat[0][randomLuku(0, arvottavatSanat[0].length)];
+                console.log(arvattavaSana);
 
-        /** Tulosta arvattavaSana viivoina html span tagiin. */
-        arvattavaSanaValinta.innerHTML = tulostaViivat(arvattavaSana);
-        arvattavaSanaValinta.classList.add("visible");
-      }
-
-      /** Arpoo random luvun min ja maks arvojen väliltä joka viittaa arvottavienLukujen listan jonkun sanan array index arvoon.
-       * tämä arvottu random luku määrittää mikä sana listalta poimitaan. */
-      function randomLuku(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min)) + min; //The minimum is inclusive
-      }
-
-      function tulostaViivat(arvattavaSana, arvaus) {
-        var viivat = "";
-        if (arvaus) {
-          for (var i = 0; i < arvattavaSana.length; i++) {
-            if (arvaus.includes(arvattavaSana[i])) {
-              viivat += arvattavaSana[i];
-            } else {
-              viivat += "-";
+                /** Tulosta arvattavaSana viivoina html span tagiin. */
+                arvattavaSanaValinta.innerHTML = tulostaViivat(arvattavaSana);
+                arvattavaSanaValinta.classList.add('visible');
             }
-          }
-        } else {
-          for (var i = 0; i < arvattavaSana.length; i++) {
-            viivat += "-";
-          }
-        }
-        console.log(viivat);
-        return viivat;
-      }
 
-      function asetaArvottavatSanat(kategoria) {
-        return kategoriat
-          .filter((category) => {
-            if (category.nimi === kategoria) {
-              return category;
+            /** Arpoo random luvun min ja maks arvojen väliltä joka viittaa arvottavienLukujen listan jonkun sanan array index arvoon.
+             * tämä arvottu random luku määrittää mikä sana listalta poimitaan. */
+            function randomLuku(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min)) + min; //The minimum is inclusive
             }
-          })
-          .map((category) => {
-            return category.sanat;
-          });
-      }
 
-      function aloitaPeli() {
-        setCanvas(hirsipuu);
-        clearCanvas();
-        if (!arvattavaSana) {
-          arvoSana();
-        }
-      }
+            function tulostaViivat(arvattavaSana, arvaus) {
+                var viivat = '';
+                if (arvaus) {
+                    for (var i = 0; i < arvattavaSana.length; i++) {
+                        if (arvaus.includes(arvattavaSana[i])) {
+                            viivat += arvattavaSana[i];
+                            console.log(arvaus);
+                            console.log(arvattavaSana[i]);
+                            console.log(viivat);
+                        } else {
+                            viivat += '-';
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < arvattavaSana.length; i++) {
+                        viivat += '-';
+                    }
+                }
+                return viivat;
+            }
 
-      function validoiArvaus(syote) {
-        console.log("arvaa");
-        if (arvaus === arvattavaSana) {
-          arvattavaSanaValinta.innerHTML = syote;
-          arvaus = arvattavaSanaValinta.innerHTML;
-          document.querySelector("#syote").value = "";
-        } else if (arvaus !== arvattavaSana && arvattavaSana.includes(syote)) {
-          arvaus.push(syote);
-          arvattavaSanaValinta.innerHTML = tulostaViivat(arvattavaSana, arvaus);
-          document.querySelector("#syote").value = "";
-        } else {
-          return arvattavaSanaValinta;
-        }
-      }
-    </script>
-  </body>
+            function asetaArvottavatSanat(kategoria) {
+                return kategoriat
+                    .filter(category => {
+                        if (category.nimi === kategoria) {
+                            return category;
+                        }
+                    })
+                    .map(category => {
+                        return category.sanat;
+                    });
+            }
+
+            function aloitaPeli() {
+                setCanvas(hirsipuu);
+                clearCanvas();
+                if (!arvattavaSana) {
+                    arvoSana();
+                }
+            }
+
+            function lopetaPeli() {
+                count = 0;
+                arvattavaSana = '';
+                arvattavaSanaValinta.innerHTML = 'Game over';
+                var timer = setTimeout(clearCanvas, 5000);
+                clearTimeout(timer);
+            }
+
+            function validoiArvaus(syote) {
+                if (arvaus === arvattavaSana) {
+                    arvattavaSanaValinta.innerHTML = syote;
+                    arvaus = arvattavaSanaValinta.innerHTML;
+                    document.querySelector('#syote').value = '';
+                } else if (arvaus !== arvattavaSana && arvattavaSana.includes(syote)) {
+                    arvaus.push(syote);
+                    arvattavaSanaValinta.innerHTML = tulostaViivat(arvattavaSana, arvaus);
+                    document.querySelector('#syote').value = '';
+                } else {
+                    /** Jos väärä vastaus, piirrä hirsipuun ukkoa osa kerrallaan. */
+                    count++;
+                    if (count === 1) {
+                        draw('gallows');
+                    } else if (count === 2) {
+                        draw('head');
+                    } else if (count === 3) {
+                        draw('body');
+                    } else if (count === 4) {
+                        draw('rightHarm');
+                    } else if (count === 5) {
+                        draw('leftHarm');
+                    } else if (count === 6) {
+                        draw('rightLeg');
+                    } else if (count === 7) {
+                        draw('rightFoot');
+                    } else if (count === 8) {
+                        draw('leftLeg');
+                    } else {
+                        draw('leftFoot');
+                        lopetaPeli();
+                    }
+                    document.querySelector('#syote').value = '';
+                }
+            }
+        </script>
+    </body>
 </html>
