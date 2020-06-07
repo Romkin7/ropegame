@@ -86,9 +86,6 @@
                     for (var i = 0; i < arvattavaSana.length; i++) {
                         if (arvaus.includes(arvattavaSana[i])) {
                             viivat += arvattavaSana[i];
-                            console.log(arvaus);
-                            console.log(arvattavaSana[i]);
-                            console.log(viivat);
                         } else {
                             viivat += '-';
                         }
@@ -98,7 +95,12 @@
                         viivat += '-';
                     }
                 }
-                return viivat;
+                if (viivat.split('').includes('-')) {
+                    return viivat;
+                } else {
+                    lopetaPeli();
+                    return 'Yay, oikein arvattu!';
+                }
             }
 
             function asetaArvottavatSanat(kategoria) {
@@ -122,6 +124,7 @@
             }
 
             function lopetaPeli() {
+                console.log(voittoLausahdus);
                 count = 0;
                 arvattavaSana = '';
                 arvattavaSanaValinta.innerHTML = 'Game over';
