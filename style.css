@@ -1,0 +1,23 @@
+body {
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+#arvaus {
+  font-family: "Courier New", Courier, monospace;
+  color: red;
+  font-size: 1.2em;
+  opacity: 0;
+  transition: opacity 2000ms ease;
+}
+#arvaus.visible {
+  opacity: 1;
+}
+
+#hirsipuu {
+  height: 30vh;
+  background-color: aliceblue;
+  margin: 0 auto;
+  display: block;
+}
