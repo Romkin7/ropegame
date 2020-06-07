@@ -25,11 +25,10 @@ function clearCanvas() {
 //
 function draw(step) {
     var part = draws[step];
-    switch (step) {
+    switch (part) {
         case 'none':
             break;
         case 'gallows':
-            console.log(step);
             context.strokeStyle = '#444';
             context.lineWidth = 10;
             context.beginPath();
